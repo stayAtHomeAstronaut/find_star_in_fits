@@ -12,7 +12,7 @@ def get_star_pixel_coordinates(fits_file, star_name):
     #search Simbad for star name and get RA DEC
     #shaq did not play Simbad
     shaq = Simbad()
-    shaq.TIMEOUT = 10
+    shaq.TIMEOUT = 20
     if shaq is not None:
         shaq.reset_votable_fields()
     else:
