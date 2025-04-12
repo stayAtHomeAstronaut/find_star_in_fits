@@ -34,7 +34,7 @@ def get_star_pixel_coordinates(fits_file, star_name):
         w = WCS(hdul[0].header)
         x, y = w.world_to_pixel(sky_coord)
 
-    return x, y, w, fitsdata
+    return x, y, w, fitsdata, ra, dec
 
 def plot_star_on_image(data, wcs, x, y, star_name):
     fig = plt.figure(figsize=(8, 8))
@@ -44,7 +44,8 @@ def plot_star_on_image(data, wcs, x, y, star_name):
     ax.set_xlabel('RA')
     ax.set_ylabel('Dec')
     ax.legend()
-    ax.set_title(f"{star_name} on FITS Image")
+    #ax.set_title(f"{star_name} on FITS Image")
+    ax.set_title(f"{star_name}    FITSx,y {int(x)},{int(y)}")
     plt.grid(color='white', ls='dotted')
     plt.show()
 
@@ -58,6 +59,7 @@ if __name__ == "__main__":
     fits_path = sys.argv[1]
     star = sys.argv[2]
 
-    x, y, wcs, data = get_star_pixel_coordinates(fits_path, star)
-    print(f"{star} is at pixel coordinates: x = {x:.2f}, y = {y:.2f}")
+    x, y, wcs, data, ra, dec = get_star_pixel_coordinates(fits_path, star)
+    print(f"{star} ra = {ra:.6f}, dec = {dec:.6f}")
+    print(f"{star} is at FITS pixel coordinates: {int(x)},{int(y)}")
     plot_star_on_image(data, wcs, x, y, star)
