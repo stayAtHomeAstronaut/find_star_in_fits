@@ -13,15 +13,18 @@ def get_star_pixel_coordinates(fits_file, star_name):
     #shaq did not play Simbad
     shaq = Simbad()
     shaq.TIMEOUT = 10
-    shaq.remove_votable_fields('coordinates')
-    shaq.add_votable_fields('ra(d)', 'dec(d)')
+    if shaq is not None:
+        shaq.reset_votable_fields()
+    else:
+        print("shaq is None")
+    shaq.add_votable_fields('ra', 'dec')
     result = shaq.query_object(star_name)
 
     if result is None:
         raise ValueError(f"Could not find star name '{star_name}'")
 
-    ra = result['RA_d'][0]
-    dec = result['DEC_d'][0]
+    ra = result['ra'][0]
+    dec = result['dec'][0]
     sky_coord = SkyCoord(ra=ra * u.deg, dec=dec * u.deg, frame='icrs')
 
     #Get the WCS from the FITS header
