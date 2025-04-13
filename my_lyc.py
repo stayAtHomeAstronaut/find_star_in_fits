@@ -8,14 +8,17 @@ from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.stats import SigmaClip
+from astropy.utils.exceptions import AstropyWarning
 from photutils.aperture import CircularAperture, aperture_photometry
 from photutils.background import Background2D, MedianBackground
 from astropy import units as u
+import warnings
+warnings.simplefilter('ignore', category=AstropyWarning)
 
 # === User Inputs ===
-fits_folder = 'fits_images/'  # folder containing FITS files
-target_ra = 150.076  # example RA in degrees
-target_dec = 2.2058  # example DEC in degrees
+fits_folder = '/home/dan/Pictures/TIC_67646988/Light/'  # folder containing FITS files
+target_ra = 147.769065  # example RA in degrees
+target_dec = 35.969295  # example DEC in degrees
 aperture_radius = 5.0  # in pixels
 
 # === Convert RA/DEC to SkyCoord ===
@@ -69,7 +72,7 @@ plt.figure(figsize=(10, 5))
 plt.plot(times, fluxes, 'o-', color='black')
 plt.xlabel('Julian Date')
 plt.ylabel('Flux (ADU)')
-plt.title('Light Curve of Variable Star')
+plt.title('Light Curve')
 plt.grid(True)
 plt.tight_layout()
 plt.show()

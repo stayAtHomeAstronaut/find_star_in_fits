@@ -5,10 +5,13 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
 from astropy.visualization.wcsaxes import WCSAxes
+from astropy.utils.exceptions import AstropyWarning
 from astroquery.simbad import Simbad
 import astropy.units as u
 import matplotlib.pyplot as plt
 import sys
+import warnings
+warnings.simplefilter('ignore', category=AstropyWarning)
 
 def get_star_pixel_coordinates(fits_file, star_name):
     #search Simbad for star name and get RA DEC
@@ -23,7 +26,7 @@ def get_star_pixel_coordinates(fits_file, star_name):
     result = shaq.query_object(star_name)
 
     if result is None:
-        raise ValueError(f"Could not resolve star name '{star_name}'")
+        raise ValueError(f"Simbad could not find '{star_name}'")
 
     ra = result['ra'][0]
     dec = result['dec'][0]

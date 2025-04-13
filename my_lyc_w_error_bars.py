@@ -15,15 +15,15 @@ from photutils.background import Background2D, MedianBackground
 from astropy import units as u
 
 # === User Inputs ===
-fits_folder = 'fits_images/'
-target_ra = 150.076
-target_dec = 2.2058
-aperture_radius = 5.0  # pixels
+fits_folder = '/home/dan/Pictures/HAT-P-3/Light/'  # folder containing FITS files
+target_ra = 206.094141 # example RA in degrees
+target_dec = 48.028668  # example DEC in degrees
+aperture_radius = 5.0  # in pixels
 
 comparison_coords = [
-    (150.078, 2.2065),
-    (150.080, 2.2070),
-    (150.074, 2.2045)
+    (205.808333, 47.615000),
+    (206.049380, 47.918879),
+    (206.569083, 48.071794)
 ]
 
 target_coord = SkyCoord(ra=target_ra*u.deg, dec=target_dec*u.deg)
