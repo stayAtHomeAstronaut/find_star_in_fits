@@ -14,7 +14,7 @@ from photutils.aperture import CircularAperture, aperture_photometry
 from photutils.background import Background2D, MedianBackground
 from astropy import units as u
 
-# === User Inputs ===
+# === need RA in degrees  (hours * 15) ===
 fits_folder = '/home/dan/Pictures/HAT-P-3/Light/'  # folder containing FITS files
 target_ra = 206.094141 # example RA in degrees
 target_dec = 48.028668  # example DEC in degrees
