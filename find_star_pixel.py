@@ -1,5 +1,5 @@
 #find and display
-#python find_star_pixel.py my_image.fits "Polaris"
+#python find_star_pixel.py my_image.fits "XO-6"
 
 from astropy.io import fits
 from astropy.wcs import WCS
