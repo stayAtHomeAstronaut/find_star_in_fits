@@ -26,13 +26,23 @@ target_dec = 35.969295  # example DEC in degrees
 
 #fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced/'
 fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
+
 target_name = 'XO-6'
 target_ra = 94.793212  # RA in degrees
 target_dec = 73.827663  # DEC in degrees
+
+comp_name = 'TYC 4357-1174-1'
+comp_ra = 94.1925  # RA in degrees
+comp_dec = 73.6074  # DEC in degrees
+
+
 aperture_radius = 5.0  # in pixels
 
 # === Convert RA/DEC to SkyCoord ===
 target_coord = SkyCoord(ra=target_ra*u.deg, dec=target_dec*u.deg)
+comp_coord = SkyCoord(ra=comp_ra*u.deg, dec=comp_dec*u.deg)
+
+
 
 times = []
 times_red = []
@@ -43,6 +53,11 @@ fluxes_red = []
 fluxes_blue = []
 fluxes_green =[]
 ratio_array = []
+
+comp_fluxes_red = []
+comp_fluxes_blue = []
+comp_fluxes_green =[]
+comp_ratio_array = []
 
 colors = []
 colors.append('red')
@@ -63,12 +78,12 @@ for color in colors:
     
             # Convert sky coordinates to pixel position
             x, y = wcs.world_to_pixel(target_coord)
-    
+            comp_x, comp_y = wcs.world_to_pixel(comp_coord)
+
             # Background subtraction
             bkg_estimator = MedianBackground()
             sigma_clip = SigmaClip(sigma=3)
-            bkg = Background2D(data, (50, 50), filter_size=(3, 3),
-                               sigma_clip=sigma_clip, bkg_estimator=bkg_estimator)
+            bkg = Background2D(data, (50, 50), filter_size=(3, 3),sigma_clip=sigma_clip, bkg_estimator=bkg_estimator)
             data_sub = data - bkg.background
     
             # Aperture photometry
@@ -76,7 +91,11 @@ for color in colors:
             aperture = CircularAperture(position, r=aperture_radius)
             phot_table = aperture_photometry(data_sub, aperture)
             flux = phot_table['aperture_sum'][0]
-    
+            comp_position = [(comp_x, comp_y)]
+            comp_aperture = CircularAperture(comp_position, r=aperture_radius)
+            comp_phot_table = aperture_photometry(data_sub, comp_aperture)
+            comp_flux = comp_phot_table['aperture_sum'][0]
+
             # Get observation time
             time_obs = header.get('DATE-OBS', None)
             if time_obs is not None:
@@ -84,15 +103,20 @@ for color in colors:
                 times.append(time)
                 fluxes.append(flux)
                 if color == 'red':
-                	times_red.append(time)
-                	fluxes_red.append(flux)
+                    times_red.append(time)
+                    fluxes_red.append(flux)
+                    comp_fluxes_red.append(comp_flux)
                 if color == 'blue':
-                	times_blue.append(time)
-                	fluxes_blue.append(flux)
+                    times_blue.append(time)
+                    fluxes_blue.append(flux)
+                    comp_fluxes_blue.append(comp_flux)
                 if color == 'green':
-                	times_green.append(time)
-                	fluxes_green.append(flux)
-    
+                    times_green.append(time)
+                    fluxes_green.append(flux)
+                    comp_fluxes_green.append(comp_flux)
+
+
+
 # === Sort by time and convert to numpy arrays ===
 times = np.array(times)
 fluxes = np.array(fluxes)
@@ -102,22 +126,27 @@ fluxes = fluxes[sorted_indices]
 
 times_red = np.array(times_red)
 fluxes_red = np.array(fluxes_red)
+comp_fluxes_red = np.array(comp_fluxes_red)
 sorted_indices = np.argsort(times_red)
 times_red = times_red[sorted_indices]
 fluxes_red = fluxes_red[sorted_indices]
+comp_fluxes_red = comp_fluxes_red[sorted_indices]
 
 times_blue = np.array(times_blue)
 fluxes_blue = np.array(fluxes_blue)
+comp_fluxes_blue = np.array(comp_fluxes_blue)
 sorted_indices = np.argsort(times_blue)
 times_blue = times_blue[sorted_indices]
 fluxes_blue = fluxes_blue[sorted_indices]
+comp_fluxes_blue = comp_fluxes_blue[sorted_indices]
 
 times_green = np.array(times_green)
 fluxes_green = np.array(fluxes_green)
+comp_fluxes_green = np.array(comp_fluxes_green)
 sorted_indices = np.argsort(times_green)
 times_green = times_green[sorted_indices]
 fluxes_green = fluxes_green[sorted_indices]
-
+comp_fluxes_green = comp_fluxes_green[sorted_indices]
 
 rows = len(times_red)
 obs_time_list = []
@@ -126,24 +155,25 @@ for i in range(rows):
     obs_time_list.append(obs_time.iso)
     if (times_red[i] == times_blue[i]):
         ratio_array.append(10000*(fluxes_blue[i]/fluxes_red[i]))
-	
+        comp_ratio_array.append(10000*(comp_fluxes_blue[i]/comp_fluxes_red[i]))
+
 cols = 6
 #always append to a list, then concatinate into a dataframe
 row_list = []
 for i in range(rows):
-    row_list.append({"obs_date":obs_time_list[i],"JD":times_red[i],"flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i]})
+    row_list.append({"JD":times_red[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
 
 df = pd.concat([pd.DataFrame([row]) for row in row_list], ignore_index=True)
 
 print(df)
-outfile = target_name + '_rgb_output.csv'
+outfile = target_name + '_' + comp_name + '_rgb_output.csv'
 df.to_csv(outfile, index=False)
 
 
-q_low = df["blue_over_red"].quantile(0.01)
-q_hi  = df["blue_over_red"].quantile(0.99)
+q_low = df["blue_over_red"].quantile(0.02)
+q_hi  = df["blue_over_red"].quantile(0.98)
 df_filtered = df[(df["blue_over_red"] < q_hi) & (df["blue_over_red"] > q_low)]
-outfile = outfile = target_name + '_quantile_filtered_output.csv'
+outfile = target_name + '_' + comp_name + '_quantile_filtered_output.csv'
 df_filtered.to_csv(outfile, index=False)
 
 # === Plot Light Curve ===
@@ -153,6 +183,12 @@ plt.plot(times_red, fluxes_red, 'o-', color='red')
 plt.plot(times_blue, fluxes_blue, 'o-', color='blue')
 plt.plot(times_green, fluxes_green, 'o-', color='green')
 plt.plot(times_red, ratio_array, 'o-', color='grey')
+
+plt.plot(times_red, comp_fluxes_red, '.--', color='red')
+plt.plot(times_blue, comp_fluxes_blue, '.--', color='blue')
+plt.plot(times_green, comp_fluxes_green, '.--', color='green')
+plt.plot(times_red, comp_ratio_array, '.--', color='grey')
+
 
 plt.xlabel('Julian Date')
 plt.ylabel('Flux (ADU)')
