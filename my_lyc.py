@@ -148,7 +148,7 @@ df_filtered.to_csv(outfile, index=False)
 
 # === Plot Light Curve ===
 plt.figure(figsize=(10, 5))
-plt.plot(times, fluxes, 'o-', color='black')
+#plt.plot(times, fluxes, 'o-', color='black')
 plt.plot(times_red, fluxes_red, 'o-', color='red')
 plt.plot(times_blue, fluxes_blue, 'o-', color='blue')
 plt.plot(times_green, fluxes_green, 'o-', color='green')
