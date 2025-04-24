@@ -24,8 +24,8 @@ target_ra = 147.769065  # example RA in degrees
 target_dec = 35.969295  # example DEC in degrees
 
 
-#fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced/'
-fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
+fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced/'
+#fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
 
 target_name = 'XO-6'
 target_ra = 94.793212  # RA in degrees
@@ -161,7 +161,7 @@ cols = 6
 #always append to a list, then concatinate into a dataframe
 row_list = []
 for i in range(rows):
-    row_list.append({"JD":times_red[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
+    row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
 
 df = pd.concat([pd.DataFrame([row]) for row in row_list], ignore_index=True)
 
