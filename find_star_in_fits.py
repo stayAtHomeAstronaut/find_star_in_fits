@@ -7,6 +7,9 @@ from astropy.coordinates import SkyCoord
 from astroquery.simbad import Simbad
 import astropy.units as u
 import sys
+import json
+import pandas as pd
+
 
 def get_star_pixel_coordinates(fits_file, star_name):
     #search Simbad for star name and get RA DEC
@@ -47,3 +50,12 @@ if __name__ == "__main__":
     x, y, ra, dec = get_star_pixel_coordinates(fits_path, star)
     print(f"{star} coordinates: ra = {ra:.4f}, dec = {dec:.4f}")
     print(f"{star} is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
+    star_data = {
+        'star_name': [{star}],
+        'ra_degrees': [ra],
+        'dec_degrees': [dec]
+    }
+    df = pd.DataFrame(star_data)
+
+    filename = star.replace(' ','_') + '.json'
+    df.to_json(filename, orient='records', indent=4, lines=True)

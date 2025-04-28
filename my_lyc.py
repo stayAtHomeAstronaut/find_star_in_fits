@@ -18,22 +18,29 @@ import warnings
 warnings.simplefilter('ignore', category=AstropyWarning)
 
 # === User Inputs ===
-fits_folder = '/Volumes/SSDonUSB/astro_pics/TIC_67646988/Light4Split_d/'  # folder containing FITS files
-target_name = "TIC 67646988"
-target_ra = 147.769065  # example RA in degrees
-target_dec = 35.969295  # example DEC in degrees
 
-
-fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced/'
+fits_folder = '/home/dan/Pictures/HAT-P-xx/HAT-P-20/Light/demosaiced'
 #fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
 
-target_name = 'XO-6'
-target_ra = 94.793212  # RA in degrees
-target_dec = 73.827663  # DEC in degrees
+target_name = 'HAT-P-20'
+target_ra = 111.9165  # RA in degrees
+target_dec = 24.3365  # DEC in degrees
 
-comp_name = 'TYC 4357-1174-1'
-comp_ra = 94.1925  # RA in degrees
-comp_dec = 73.6074  # DEC in degrees
+comp_name = 'TYC 1914-1285-1'
+comp_ra = 112.0604  # RA in degrees
+comp_dec = 24.9020  # DEC in degrees
+
+
+fits_folder = '/home/dan/Pictures/TYC_3455-638-1/Light/demosaiced'
+#fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
+
+target_name = 'TYC 3455-628-1'
+target_ra = 184.1537  # RA in degrees
+target_dec = 47.0936  # DEC in degrees
+
+comp_name = 'NGC 4226'
+comp_ra = 184.1095  # RA in degrees
+comp_dec = 47.0254 # DEC in degrees
 
 
 aperture_radius = 5.0  # in pixels
@@ -45,6 +52,7 @@ comp_coord = SkyCoord(ra=comp_ra*u.deg, dec=comp_dec*u.deg)
 
 
 times = []
+airmass = []
 times_red = []
 times_blue = []
 times_green = []
@@ -101,6 +109,9 @@ for color in colors:
             if time_obs is not None:
                 time = Time(time_obs, format='isot', scale='utc').jd
                 times.append(time)
+                airmass_obs = header.get('AIRMASS',None)
+                if airmass_obs is not None:
+                    airmass.append(airmass_obs)
                 fluxes.append(flux)
                 if color == 'red':
                     times_red.append(time)
@@ -161,7 +172,7 @@ cols = 6
 #always append to a list, then concatinate into a dataframe
 row_list = []
 for i in range(rows):
-    row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
+    row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"airmass":airmass[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
 
 df = pd.concat([pd.DataFrame([row]) for row in row_list], ignore_index=True)
 
@@ -179,6 +190,7 @@ df_filtered.to_csv(outfile, index=False)
 # === Plot Light Curve ===
 plt.figure(figsize=(10, 5))
 #plt.plot(times, fluxes, 'o-', color='black')
+plt.plot(times, airmass, '-', color='black')
 plt.plot(times_red, fluxes_red, 'o-', color='red')
 plt.plot(times_blue, fluxes_blue, 'o-', color='blue')
 plt.plot(times_green, fluxes_green, 'o-', color='green')
