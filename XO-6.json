@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "XO-6",
+        "ra_degrees": 94.7932121821,
+        "dec_degrees": 73.8276631153
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "TYC 4357-177-1",
+        "ra_degrees": 95.45736176,
+        "dec_degrees": 73.9140074269
+    }
+]

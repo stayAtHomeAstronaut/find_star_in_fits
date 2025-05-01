@@ -20,20 +20,18 @@ warnings.simplefilter('ignore', category=AstropyWarning)
 # === User Inputs ===
 
 fits_folder = '/home/dan/Pictures/HAT-P-xx/HAT-P-20/Light/demosaiced'
-#fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
+fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
 
-target_name = 'HAT-P-20'
-target_ra = 111.9165  # RA in degrees
-target_dec = 24.3365  # DEC in degrees
+#target_name = 'HAT-P-20'
+#target_ra = 111.9165  # RA in degrees
+#target_dec = 24.3365  # DEC in degrees
 
-comp_name = 'TYC 1914-1285-1'
-comp_ra = 112.0604  # RA in degrees
-comp_dec = 24.9020  # DEC in degrees
+#comp_name = 'TYC 1914-1285-1'
+#comp_ra = 112.0604  # RA in degrees
+#comp_dec = 24.9020  # DEC in degrees
 
 
-fits_folder = '/home/dan/Pictures/TYC_3455-638-1/Light/demosaiced'
-#fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
-
+#fits_folder = '/home/dan/Pictures/TYC_3455-638-1/Light/demosaiced'
 target_name = 'TYC 3455-628-1'
 target_ra = 184.1537  # RA in degrees
 target_dec = 47.0936  # DEC in degrees
@@ -41,6 +39,16 @@ target_dec = 47.0936  # DEC in degrees
 comp_name = 'NGC 4226'
 comp_ra = 184.1095  # RA in degrees
 comp_dec = 47.0254 # DEC in degrees
+
+fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/Light_d_a/'
+fits_folder = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced'
+target_name = 'XO-6'  #ra = 94.7932, dec = 73.8277
+target_ra = 94.7932  # RA in degrees
+target_dec = 73.8277  # DEC in degrees
+
+comp_name = 'TYC 4357-177-1'
+comp_ra = 95.4574  # RA in degrees
+comp_dec = 73.9140 # DEC in degrees
 
 
 aperture_radius = 5.0  # in pixels
@@ -172,20 +180,14 @@ cols = 6
 #always append to a list, then concatinate into a dataframe
 row_list = []
 for i in range(rows):
-    row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"airmass":airmass[i],"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
+    row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"airmass":airmass[i],"target_name":target_name,"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_name":comp_name,"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
 
 df = pd.concat([pd.DataFrame([row]) for row in row_list], ignore_index=True)
 
 print(df)
-outfile = target_name + '_' + comp_name + '_rgb_output.csv'
+outfile = target_name.replace(" ","_") + '_' + comp_name.replace(" ","_") + '_rgb_output.csv'
 df.to_csv(outfile, index=False)
 
-
-q_low = df["blue_over_red"].quantile(0.02)
-q_hi  = df["blue_over_red"].quantile(0.98)
-df_filtered = df[(df["blue_over_red"] < q_hi) & (df["blue_over_red"] > q_low)]
-outfile = target_name + '_' + comp_name + '_quantile_filtered_output.csv'
-df_filtered.to_csv(outfile, index=False)
 
 # === Plot Light Curve ===
 plt.figure(figsize=(10, 5))
