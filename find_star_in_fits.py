@@ -40,7 +40,7 @@ def get_star_pixel_coordinates(fits_file, star_name):
 
 # Example usage:
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print("Usage: python find_star_in_fits.py <fits_file> <star_name>")
         print("Put star name in double quotes")
         sys.exit(1)
@@ -51,11 +51,29 @@ if __name__ == "__main__":
     print(f"{star} coordinates: ra = {ra:.4f}, dec = {dec:.4f}")
     print(f"{star} is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
     star_data = {
-        'star_name': [{star}],
+        'target_comp': 'target',
+        'star_name': [star],
         'ra_degrees': [ra],
         'dec_degrees': [dec]
     }
     df = pd.DataFrame(star_data)
-
+    i = 3
+    while i < len(sys.argv):
+        comp_star = sys.argv[i]
+        x, y, ra, dec = get_star_pixel_coordinates(fits_path, comp_star)
+        print(f"{comp_star} coordinates: ra = {ra:.4f}, dec = {dec:.4f} and is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
+        comp_star_data = {
+            'target_comp': 'comp',
+            'star_name': [comp_star],
+            'ra_degrees': [ra],
+            'dec_degrees': [dec]
+        }
+        comp_df = pd.DataFrame(comp_star_data)
+        df = pd.concat([df, comp_df], ignore_index=True)
+        i += 1
+    
+    json_records = df.to_json(orient='records')
+    #print(json_records)
     filename = star.replace(' ','_') + '.json'
-    df.to_json(filename, orient='records', indent=4, lines=True)
+    with open(filename, 'w') as f:
+        json.dump(json.loads(json_records), f, indent=4)
