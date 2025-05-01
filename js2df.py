@@ -5,7 +5,20 @@ import pandas as pd
 def read_and_put_into_dataframe(json_file_path):
     star_data_df = pd.read_json(json_file_path)
     print(star_data_df)
-    star_data_df.head()
+    for index, row in star_data_df.iterrows():
+        if {row['target_comp']} == 'target':
+            print(f"Index: {index} is target")
+            print(f" {row['star_name']}")
+            target_name = {row['star_name']}
+            target_ra = {row['ra_degrees']}  # RA in degrees
+            target_dec = {row['dec_degrees']}  # DEC in degrees
+        else:
+            print(f"Index: {index} is comp")
+            print(f" {row['star_name']}")
+            comp_name = {row['star_name']}
+            comp_ra = {row['ra_degrees']}  # RA in degrees
+            comp_dec = {row['dec_degrees']}  # DEC in degrees
+
 
 
 if __name__ == "__main__":
