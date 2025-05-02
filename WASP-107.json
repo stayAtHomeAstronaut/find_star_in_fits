@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "WASP-107",
+        "ra_degrees": 188.3868504628,
+        "dec_degrees": -10.1461737701
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "TYC 5530-1787-1",
+        "ra_degrees": 188.5567808097,
+        "dec_degrees": -10.1407321189
+    }
+]

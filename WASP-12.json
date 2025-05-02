@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "WASP-12",
+        "ra_degrees": 97.6366525385,
+        "dec_degrees": 29.6722954174
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "TYC 1891-188-1",
+        "ra_degrees": 97.8218392671,
+        "dec_degrees": 29.6972624893
+    }
+]

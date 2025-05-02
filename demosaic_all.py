@@ -56,8 +56,8 @@ def process_fits_directory(input_dir, output_dir, bayer_pattern='GRBG'):
 
 if __name__ == '__main__':
     # Define your input and output directories
-    input_directory = '/Volumes/SSDonUSB/astro_pics/XO-6/Light'
-    output_directory = '/Volumes/SSDonUSB/astro_pics/XO-6/demosaiced'
+    input_directory = '/Volumes/SSDonUSB/astro_pics/WASP-12/Light'
+    output_directory = '/Volumes/SSDonUSB/astro_pics/WASP-12/demosaiced'
 
     process_fits_directory(input_directory, output_directory, bayer_pattern='GRBG')
     print("All FITS files have been demosaiced and saved.")
