@@ -4,7 +4,7 @@ import pandas as pd
 
 
 
-def fixdata(csv_file_path):
+def fixdata(csv_file_path,r_avg_mins):
     pddf = pd.read_csv(csv_file_path, header=0)
     #pddf = pd.read_csv('WASP-12_TYC_1891-188-1_rgb_output.csv', header=0)
 
@@ -21,7 +21,7 @@ def fixdata(csv_file_path):
     print(pddf)
 
 
-    r_avg_mins = 15
+    #r_avg_mins = 15
     (pddf["airmass"]*1000000 ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgrey',linestyle='dashdot')
 
     (pddf["blue_over_red"]*1000000).rolling(r_avg_mins).mean().plot(kind='line', color='purple')
@@ -46,9 +46,13 @@ def fixdata(csv_file_path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python fix_dat.py <CSV_file_name> ")
+        print("Usage: python fix_dat.py <CSV_file_name> <minutes_for_rolling_average> (default: 15)")
         sys.exit(1)
     
     csv_file_path = sys.argv[1]
+    if len(sys.argv)==3  :
+        r_avg_mins = int(sys.argv[2])
+    else:
+        r_avg_mins = 15
 
-    fixdata(csv_file_path)
+    fixdata(csv_file_path,r_avg_mins)
