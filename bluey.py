@@ -22,8 +22,7 @@ warnings.simplefilter('ignore', category=AstropyWarning)
 
 def suess(json_file_path):
     star_data_df = pd.read_json(json_file_path)
-    #star_data_df['ra_degrees'] = pd.to_numeric(star_data_df['ra_degrees'], errors='coerce')
-    #star_data_df['ra_degrees'] = star_data_df['ra_degrees'].astype(float)
+
 
     #star_data_df['dec_degrees'] = pd.to_numeric(star_data_df['dec_degrees'], errors='coerce')
     print(star_data_df)
