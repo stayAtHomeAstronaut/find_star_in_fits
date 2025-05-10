@@ -205,7 +205,7 @@ def suess(json_file_path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Usage: python bluey.py <json_file_name> <demosaiced_fits_folder")
+        print("Usage: python bluey.py <json_file_name> <demosaiced_fits_folder>")
         print("Put star name in double quotes")
         sys.exit(1)
     

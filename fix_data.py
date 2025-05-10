@@ -22,16 +22,16 @@ def fixdata(csv_file_path,r_avg_mins):
 
 
     #r_avg_mins = 15
-    (pddf["airmass"]*1000000 ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgrey',linestyle='dashdot')
+    (pddf["airmass"]*10 ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgrey',linestyle='dashdot')
 
-    (pddf["blue_over_red"]*1000000).rolling(r_avg_mins).mean().plot(kind='line', color='purple')
-    ((pddf["target_flux_red"] + pddf["flux_green"] + pddf["flux_blue"])/2).rolling(r_avg_mins).mean().plot(kind='line', color='black')
+    (pddf["blue_over_red"]*10).rolling(r_avg_mins).mean().plot(kind='line', color='purple')
+    ((pddf["target_flux_red"] + pddf["flux_green"] + pddf["flux_blue"])).rolling(r_avg_mins).mean().plot(kind='line', color='black')
     (pddf["target_flux_red"] ).rolling(r_avg_mins).mean().plot(kind='line', color='red')
     (pddf["flux_green"] ).rolling(r_avg_mins).mean().plot(kind='line', color='green')
     (pddf["flux_blue"] ).rolling(r_avg_mins).mean().plot(kind='line', color='blue')
 
 
-    (pddf["comp_blue_over_red"]*1000000).rolling(r_avg_mins).mean().plot(kind='line', color='purple',linestyle='--', label='Dashed')
+    #(pddf["comp_blue_over_red"]*10).rolling(r_avg_mins).mean().plot(kind='line', color='purple',linestyle='--', label='Dashed')
     #(pddf["comp_flux_red"] ).rolling(r_avg_mins).mean().plot(kind='line', color='salmon',linestyle='--')
     #(pddf["comp_flux_green"] ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgreen',linestyle='--')
     #(pddf["comp_flux_blue"] ).rolling(r_avg_mins).mean().plot(kind='line', color='lightblue',linestyle='--')
@@ -39,7 +39,7 @@ def fixdata(csv_file_path,r_avg_mins):
     sz_label = 'Rolling ' + str(r_avg_mins) + ' minute average'
     plt.title("Target Name: " + pddf["target_name"][0])
     plt.xlabel(sz_label)
-    plt.ylabel('Blue/Red Flux Radio * 1m (Purple)')
+    plt.ylabel('Blue/Red Flux Radio * 10 (Purple)')
     plt.grid(True)
     plt.show()
 

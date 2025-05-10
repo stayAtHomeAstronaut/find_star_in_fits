@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 from astropy.io import fits
 import cv2
@@ -55,9 +56,14 @@ def process_fits_directory(input_dir, output_dir, bayer_pattern='GRBG'):
         demosaic_fits_image(fits_file, base_name, output_dir, bayer_pattern)
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Usage: python demosaic_all.py <lights_file_path>")
+        sys.exit(1)
+    
+    lights_file_path = sys.argv[1]
     # Define your input and output directories
-    input_directory = '/Volumes/SSDonUSB/astro_pics/WASP-12/Light'
-    output_directory = '/Volumes/SSDonUSB/astro_pics/WASP-12/demosaiced'
+    input_directory = lights_file_path
+    output_directory = lights_file_path.replace('Light','demosaiced')
 
     process_fits_directory(input_directory, output_directory, bayer_pattern='GRBG')
     print("All FITS files have been demosaiced and saved.")
