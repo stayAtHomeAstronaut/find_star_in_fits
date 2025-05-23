@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "HAT-P-3",
+        "ra_degrees": 206.0941405624,
+        "dec_degrees": 48.0286682593
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "TYC 3466-1158-1",
+        "ra_degrees": 206.0493798748,
+        "dec_degrees": 47.9188789073
+    }
+]

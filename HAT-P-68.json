@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "HAT-P-68",
+        "ra_degrees": 118.4832618804,
+        "dec_degrees": 23.9382252462
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "TYC 1925-106-1",
+        "ra_degrees": 118.547107824,
+        "dec_degrees": 23.8809360792
+    }
+]

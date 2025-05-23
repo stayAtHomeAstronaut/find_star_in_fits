@@ -35,11 +35,11 @@ def fixdata(csv_file_path,r_avg_mins):
     #(pddf["comp_flux_red"] ).rolling(r_avg_mins).mean().plot(kind='line', color='salmon',linestyle='--')
     #(pddf["comp_flux_green"] ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgreen',linestyle='--')
     #(pddf["comp_flux_blue"] ).rolling(r_avg_mins).mean().plot(kind='line', color='lightblue',linestyle='--')
-    #((pddf["comp_flux_red"] + pddf["comp_flux_green"] + pddf["comp_flux_blue"])/2).rolling(r_avg_mins).mean().plot(kind='line', color='darkgrey',linestyle='--', label='Dashed')
+    ((pddf["comp_flux_red"] + pddf["comp_flux_green"] + pddf["comp_flux_blue"])).rolling(r_avg_mins).mean().plot(kind='line', color='darkgrey',linestyle='--', label='Dashed')
     sz_label = 'Rolling ' + str(r_avg_mins) + ' minute average'
     plt.title("Target Name: " + pddf["target_name"][0])
     plt.xlabel(sz_label)
-    plt.ylabel('Blue/Red Flux Radio * 10 (Purple)')
+    plt.ylabel('Blue/Red Flux Ratio * 10 (Purple)')
     plt.grid(True)
     plt.show()
 

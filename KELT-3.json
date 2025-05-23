@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "KELT-3",
+        "ra_degrees": 148.643278888,
+        "dec_degrees": 40.3880482662
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "DES J095542.05+402042.9",
+        "ra_degrees": 148.9252586049,
+        "dec_degrees": 40.3452494285
+    }
+]
