@@ -41,6 +41,7 @@ def suess(json_file_path):
             comp_dec = float({row['dec_degrees']}.pop())  # DEC in degrees
     
     aperture_radius = 5.0  # in pixels
+    aperture_radius = 2.5  # in pixels
 
     # === Convert RA/DEC to SkyCoord ===
     target_coord = SkyCoord(ra=target_ra*u.deg, dec=target_dec*u.deg)

@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "WASP-31",
+        "ra_degrees": 169.4389911155,
+        "dec_degrees": -19.0547826755
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "BD-18 3149",
+        "ra_degrees": 169.4388058196,
+        "dec_degrees": -19.1238675241
+    }
+]
