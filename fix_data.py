@@ -12,27 +12,37 @@ def fixdata(csv_file_path,r_avg_mins):
     #print(pddf)
     pddf.set_index('obs_date_time', inplace=True)
     pddf.index = pd.to_datetime(pddf.index)
-    #pddf = pddf.resample('min').mean().interpolate()
-    #pddf = pddf.resample('5min').mean().interpolate()
-    print(pddf)
+
     q_low = (pddf["target_flux_red"]  + pddf["flux_blue"]).quantile(0.01)
     q_hi  = (pddf["target_flux_red"] + pddf["flux_blue"]).quantile(0.95)
     pddf = pddf[((pddf["target_flux_red"]  + pddf["flux_blue"]) < q_hi) & ((pddf["target_flux_red"]  + pddf["flux_blue"]) > q_low)]
-    print(pddf)
-
-
-    #r_avg_mins = 15
-
-    #(pddf["blue_over_red"]*10).rolling(r_avg_mins).mean().plot(kind='line', color='purple')
+    
+    
     target_flux_average = ((pddf["target_flux_red"]  + pddf["flux_blue"]) * pddf["airmass"]).mean()
-    ((((pddf["flux_blue"]) /pddf["target_flux_red"])**25 * pddf["airmass"]) + target_flux_average ).rolling(r_avg_mins).mean().plot(kind='line', color='purple')
-    (((pddf["target_flux_red"] + pddf["flux_blue"]) * pddf["airmass"])).rolling(r_avg_mins).mean().plot(kind='line', color='black')
-    (pddf["target_flux_red"]  * pddf["airmass"]).rolling(r_avg_mins).mean().plot(kind='line', color='red')
-    (pddf["flux_blue"]  * pddf["airmass"]).rolling(r_avg_mins).mean().plot(kind='line', color='blue')
-    (pddf["airmass"] ).rolling(r_avg_mins).mean().plot(kind='line', color='lightgrey',linestyle='dashdot')
+    pddf["blue_over_red"] = ((((pddf["flux_blue"]) /pddf["target_flux_red"])**20 * pddf["airmass"]) + target_flux_average ).rolling(r_avg_mins).mean()
+    pddf.insert(3,'target_total_flux',(((pddf["target_flux_red"] + pddf["flux_blue"]) * pddf["airmass"])).rolling(r_avg_mins).mean())
+    pddf["target_flux_red"] = (pddf["target_flux_red"]  * pddf["airmass"]).rolling(r_avg_mins).mean()
+    pddf["flux_blue"] = (pddf["flux_blue"]  * pddf["airmass"]).rolling(r_avg_mins).mean()
+    pddf["airmass"] = pddf["airmass"].rolling(r_avg_mins).mean()
 
 
-    #((pddf["comp_flux_red"] + pddf["comp_flux_blue"]) * pddf["airmass"]).rolling(r_avg_mins).mean().plot(kind='line', color='darkgrey',linestyle='--', label='Dashed')
+    print(pddf[['target_total_flux','blue_over_red']])
+    shift_delta_max = (pddf['target_total_flux'].max()) / (pddf['blue_over_red'].max())
+    print(shift_delta_max)
+    for scale_exponent in range(1,125):
+        pddf["blue_over_red"] = ((pddf["flux_blue"] /pddf["target_flux_red"])**scale_exponent) + target_flux_average
+        shift_delta_max = (pddf['target_total_flux'].max()) / (pddf['blue_over_red'].max())
+        if shift_delta_max < 0.95:
+            print("scale_exponent " + str(scale_exponent) + " shift_delta_max: " + str(shift_delta_max))
+            break
+    
+    
+    pddf["blue_over_red"].plot(kind='line', color='purple')
+    pddf["airmass"].plot(kind='line', color='lightgrey',linestyle='dashdot')
+    pddf["flux_blue"].plot(kind='line', color='blue')
+    pddf["target_flux_red"].plot(kind='line', color='red')
+    pddf["target_total_flux"].plot(kind='line', color='black')
+
     sz_label = 'Rolling ' + str(r_avg_mins) + ' minute average'
     plt.title("Target Name: " + pddf["target_name"][0])
     plt.xlabel(sz_label)
