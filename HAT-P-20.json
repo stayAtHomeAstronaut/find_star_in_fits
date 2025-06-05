@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "HAT-P-20",
+        "ra_degrees": 111.9164536337,
+        "dec_degrees": 24.3365322864
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "HD 58920",
+        "ra_degrees": 112.180506941,
+        "dec_degrees": 24.2803959895
+    }
+]

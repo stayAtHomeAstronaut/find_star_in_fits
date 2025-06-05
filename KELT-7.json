@@ -1,0 +1,14 @@
+[
+    {
+        "target_comp": "target",
+        "star_name": "KELT-7",
+        "ra_degrees": 78.2955372011,
+        "dec_degrees": 33.3181668705
+    },
+    {
+        "target_comp": "comp",
+        "star_name": "HD 241589",
+        "ra_degrees": 78.3906414648,
+        "dec_degrees": 33.2746109941
+    }
+]
