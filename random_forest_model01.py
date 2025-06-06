@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error
-import joblib
+
 
 target_name = 'HAT-P-20'
 
@@ -26,12 +26,16 @@ target_data = df[df['target_name'] == target_name ].sort_values('obs_date_time')
 
 # Feature engineering
 target_data['hour'] = target_data['obs_date_time'].dt.hour + target_data['obs_date_time'].dt.minute / 60.0
-target_data['blue_over_red_lag1'] = target_data['blue_over_red'].shift(1)
+#target_data['blue_over_red_lag1'] = target_data['blue_over_red'].shift(1)
+target_data['rel_flux_lag1'] = target_data['rel_flux'].shift(1)
+
 target_data = target_data.dropna()
 
 # Define features and target
-X = target_data[['blue_over_red', 'blue_over_red_lag1', 'hour']]
-y = target_data['rel_flux']
+#X = target_data[['blue_over_red', 'blue_over_red_lag1', 'hour']]
+#y = target_data['rel_flux']
+X = target_data[['rel_flux_lag1', 'rel_flux', 'hour']]
+y = target_data['blue_over_red']
 
 # Train/test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -44,7 +48,6 @@ X_test_scaled = scaler.transform(X_test)
 # Train the model
 rf = RandomForestRegressor(n_estimators=100, random_state=42)
 rf.fit(X_train_scaled, y_train)
-joblib.dump(rf, target_name + "random_forest.joblib")
 
 # Predict
 y_pred = rf.predict(X_test_scaled)
@@ -56,11 +59,14 @@ print(f"RMSE: {mean_squared_error(y_test, y_pred):.5f}")
 
 # Plot actual vs predicted
 plt.figure(figsize=(8, 6))
-plt.scatter(y_test, y_pred, color='blue', label='Predicted vs Actual (random forest)')
+plt.scatter(y_test, y_pred, color='blue', label='Predicted vs Actual')
 plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', label='Ideal Fit')
-plt.xlabel('Actual rel_flux')
-plt.ylabel('Predicted rel_flux')
-plt.title(target_name + ': Actual vs Predicted rel_flux')
+#plt.xlabel('Actual rel_flux')
+#plt.ylabel('Predicted rel_flux')
+plt.ylabel('Actual blue_over_red')
+plt.xlabel('Predicted blue_over_red')
+
+plt.title(target_name + ': Actual vs Predicted blue_over_red (random forest)')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()

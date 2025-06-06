@@ -1,27 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestRegressor
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error
-import joblib
+
 
 target_name = 'HAT-P-20'
 
-#target_name = 'HAT-P-3'
-
-#target_name = 'WASP-12'
-
-#target_name = 'KELT-3'
-#target_name = 'WASP-107'
-#target_name = 'HAT-P-61'
-# Load your data (replace with your actual path if needed)
 df = pd.read_csv("all_transits_averaged.csv")
 
-# Convert datetime column
 df['obs_date_time'] = pd.to_datetime(df['obs_date_time'])
 
-# Filter for KELT-3 and sort by time
 target_data = df[df['target_name'] == target_name ].sort_values('obs_date_time').reset_index(drop=True)
 
 # Feature engineering
@@ -42,27 +32,24 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Train the model
-rf = RandomForestRegressor(n_estimators=100, random_state=42)
-rf.fit(X_train_scaled, y_train)
-joblib.dump(rf, target_name + "random_forest.joblib")
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42)
+xgb_model.fit(X_train_scaled, y_train)
 
 # Predict
-y_pred = rf.predict(X_test_scaled)
+y_pred = xgb_model.predict(X_test_scaled)
 
 # Evaluate
 print(f"R² Score: {r2_score(y_test, y_pred):.4f}")
 print(f"RMSE: {mean_squared_error(y_test, y_pred):.5f}")
-#print(f"RMSE: {mean_squared_error(y_test, y_pred, squared=False):.5f}")
 
 # Plot actual vs predicted
 plt.figure(figsize=(8, 6))
-plt.scatter(y_test, y_pred, color='blue', label='Predicted vs Actual (random forest)')
+plt.scatter(y_test, y_pred, color='blue', label='Predicted vs Actual')
 plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', label='Ideal Fit')
 plt.xlabel('Actual rel_flux')
 plt.ylabel('Predicted rel_flux')
-plt.title(target_name + ': Actual vs Predicted rel_flux')
+plt.title(target_name + ': Actual vs Predicted rel_flux (XGBRegressor)')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
