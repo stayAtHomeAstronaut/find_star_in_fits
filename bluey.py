@@ -33,6 +33,10 @@ def suess(json_file_path):
             target_name = {row['star_name']}.pop()
             target_ra = float({row['ra_degrees']}.pop())
             target_dec = float({row['dec_degrees']}.pop())  # DEC in degrees
+            if(float({row['tmid']}.pop()) > 0):
+                tmid=float({row['tmid']}.pop()) 
+            else:
+                tmid = 0
         else:
             print(f"Index: {index} is comp")
             print(f" {row['star_name']}")
@@ -42,6 +46,7 @@ def suess(json_file_path):
     
     aperture_radius = 5.0  # in pixels
     aperture_radius = 2.5  # in pixels
+    aperture_radius = 15.0  # in pixels
 
     # === Convert RA/DEC to SkyCoord ===
     target_coord = SkyCoord(ra=target_ra*u.deg, dec=target_dec*u.deg)
@@ -55,6 +60,7 @@ def suess(json_file_path):
     times_blue = []
     times_green = []
     fluxes = []
+
     fluxes_red = []
     fluxes_blue = []
     fluxes_green =[]
@@ -170,7 +176,7 @@ def suess(json_file_path):
     #always append to a list, then concatinate into a dataframe
     row_list = []
     for i in range(rows):
-        row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"airmass":airmass[i],"target_name":target_name,"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_name":comp_name,"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
+        row_list.append({"obs_date_time":obs_time_list[i],"JD":times_red[i],"airmass":airmass[i],"target_name":target_name,"tmid":tmid,"target_flux_red":fluxes_red[i],"flux_green":fluxes_green[i],"flux_blue":fluxes_blue[i],"blue_over_red":fluxes_blue[i]/fluxes_red[i],"comp_name":comp_name,"comp_flux_red":comp_fluxes_red[i],"comp_flux_green":comp_fluxes_green[i],"comp_flux_blue":comp_fluxes_blue[i],"comp_blue_over_red":comp_fluxes_blue[i]/comp_fluxes_red[i]})
 
     df = pd.concat([pd.DataFrame([row]) for row in row_list], ignore_index=True)
 
@@ -179,27 +185,6 @@ def suess(json_file_path):
     df.to_csv(outfile, index=False)
 
 
-    # === Plot Light Curve ===
-    plt.figure(figsize=(10, 5))
-    #plt.plot(times, fluxes, 'o-', color='black')
-    plt.plot(times, airmass, '-', color='black')
-    plt.plot(times_red, fluxes_red, 'o-', color='red')
-    plt.plot(times_blue, fluxes_blue, 'o-', color='blue')
-    plt.plot(times_green, fluxes_green, 'o-', color='green')
-    plt.plot(times_red, ratio_array, 'o-', color='grey')
-
-    plt.plot(times_red, comp_fluxes_red, '.--', color='red')
-    plt.plot(times_blue, comp_fluxes_blue, '.--', color='blue')
-    plt.plot(times_green, comp_fluxes_green, '.--', color='green')
-    plt.plot(times_red, comp_ratio_array, '.--', color='grey')
-
-
-    plt.xlabel('Julian Date')
-    plt.ylabel('Flux (ADU)')
-    plt.title(target_name)
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
 
 
 
