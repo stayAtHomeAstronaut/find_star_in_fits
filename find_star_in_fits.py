@@ -10,6 +10,12 @@ import sys
 import json
 import pandas as pd
 
+def is_float(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 def get_star_pixel_coordinates(fits_file, star_name):
     #search Simbad for star name and get RA DEC
@@ -47,6 +53,9 @@ if __name__ == "__main__":
     
     fits_path = sys.argv[1]
     star = sys.argv[2]
+    tmid = 0
+
+
     x, y, ra, dec = get_star_pixel_coordinates(fits_path, star)
     print(f"{star} coordinates: ra = {ra:.4f}, dec = {dec:.4f}")
     print(f"{star} is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
@@ -56,22 +65,36 @@ if __name__ == "__main__":
         'ra_degrees': [ra],
         'dec_degrees': [dec]
     }
+        
+         
     df = pd.DataFrame(star_data)
     i = 3
     while i < len(sys.argv):
-        comp_star = sys.argv[i]
-        x, y, ra, dec = get_star_pixel_coordinates(fits_path, comp_star)
-        print(f"{comp_star} coordinates: ra = {ra:.4f}, dec = {dec:.4f} and is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
-        comp_star_data = {
-            'target_comp': 'comp',
-            'star_name': [comp_star],
-            'ra_degrees': [ra],
-            'dec_degrees': [dec]
-        }
-        comp_df = pd.DataFrame(comp_star_data)
-        df = pd.concat([df, comp_df], ignore_index=True)
-        i += 1
+        if is_float(sys.argv[i]) == True:
+            tmid = float(sys.argv[i])
+            star_data = {
+                'target_comp': 'target',
+                'star_name': [star],
+                'ra_degrees': [ra],
+                'dec_degrees': [dec],
+                'tmid':  [tmid]
+            }
+            df = pd.DataFrame(star_data)
+            i += 1
+        else:
+            comp_star = sys.argv[i]
+            x, y, ra, dec = get_star_pixel_coordinates(fits_path, comp_star)
+            print(f"{comp_star} coordinates: ra = {ra:.4f}, dec = {dec:.4f} and is at FITS pixel coordinates: x = {x:.2f}, y = {y:.2f}")
+            comp_star_data = {
+                'target_comp': 'comp',
+                'star_name': [comp_star],
+                'ra_degrees': [ra],
+                'dec_degrees': [dec]
+            }
+            comp_df = pd.DataFrame(comp_star_data)
+            i += 1
     
+    df = pd.concat([df, comp_df], ignore_index=True)
     json_records = df.to_json(orient='records')
     #print(json_records)
     filename = star.replace(' ','_') + '.json'
